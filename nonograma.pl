@@ -1,13 +1,21 @@
 
 
 % Ejercicio 1
-matriz(F, C, M) :- completar("Ejercicio 1").
+matriz(F, C, M) :-length(M,F),maplist([Fila]>>length(Fila, C), M).
 
 % Ejercicio 2
-replicar(X, N, L) :- completar("Ejercicio 2").
+replicar(X,0,[]).
+replicar(X, N, [X|XS]):-M is N-1,replicar(X,M,XS).
 
 % Ejercicio 3
-transponer(_, _) :- completar("Ejercicio 3").
+transponer([], []).
+transponer([[]|_], []) :- !.
+transponer(M, [Columna|Resto]) :-
+    maplist(filaAcolumna, M, Columna, FilasRestantes),
+    transponer(FilasRestantes, Resto).
+
+filaAcolumna([H|T], H, T).
+
 
 % Predicado dado armarNono/3
 armarNono(RF, RC, nono(M, RS)) :-
