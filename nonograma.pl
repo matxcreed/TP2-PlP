@@ -31,10 +31,13 @@ zipR([], [], []).
 zipR([R|RT], [L|LT], [r(R,L)|T]) :- zipR(RT, LT, T).
 
 % Ejercicio 4
-pintadasValidas(_) :- completar("Ejercicio 4").
+pintadasValidas([R|RS],L) :- sumlist([R|RS], SumaRestricciones),length(L,N),
+							CantCeldasSinPintar is N-SumaRestricciones
+
+
 
 % Ejercicio 5
-resolverNaive(_) :-  completar("Ejercicio 5").
+resolverNaive(nono(_Filas, Restricciones)) :- maplist(pintadasValidas, Restricciones).
 
 % Ejercicio 6
 pintarObligatorias(_) :- completar("Ejercicio 6").
