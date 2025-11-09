@@ -50,8 +50,8 @@ pvAux([X|T], L, N):-
 	replicar('x', X, Prefix1), %?
 	remove_head(Rest, Rest2), % Rest2 crea el espacio mínimo entre restricciones
 	append(Prefix1, ['o'], Prefix2),
-	append(Prefix2, Rest2, L).
-	pvAux(T, Rest, N1), % probar ahora con la siguiente restricción
+	append(Prefix2, Rest2, L),
+	pvAux(T, Rest, N1). % probar ahora con la siguiente restricción
 	
 
 remove_head([], []).
@@ -80,7 +80,7 @@ pintarObligatorias(r([X|T], L)) :-
 	member(C, L),
 	% declarar que es C es no iniciada
 	combinarCelda(A, B,  C), % completar
-	pintarObligatorias(r([T], L)).
+	pintarObligatorias(r([	T], L)).
 	% idea?: combinar cada par de restricciones
 
 
