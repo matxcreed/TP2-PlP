@@ -4,17 +4,19 @@
 matriz(F, C, M) :-length(M,F),maplist([Fila]>>length(Fila, C), M).
 
 % Ejercicio 2
-replicar(X,0,[]).
-replicar(X, N, [X|XS]):-M is N-1,replicar(X,M,XS).
+replicar(X, N, XS):-length(XS,N),maplist(=(X), XS).
 
 % Ejercicio 3
-transponer([], []).
-transponer([[]|_], []) :- !.
-transponer(M, [Columna|Resto]) :-
-    maplist(filaAcolumna, M, Columna, FilasRestantes),
-    transponer(FilasRestantes, Resto).
+transponer([[]|_], []).
+transponer(M, T) :-
+    M = [PrimeraFila|_],
+    length(PrimeraFila, N),
+    numlist(1, N, Indices),
+    maplist(columna(M), Indices, T).
 
-filaAcolumna([H|T], H, T).
+columna(M, I, Columna) :-
+    J is I - 1,
+    maplist(nth0(J), M, Columna).
 
 
 % Predicado dado armarNono/3
