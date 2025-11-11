@@ -4,18 +4,21 @@
 matriz(F, C, M) :-length(M,F),maplist([Fila]>>length(Fila, C), M).
 
 % Ejercicio 2
-replicar(X,0,[]).
-replicar(X, N, [X|XS]):-M is N-1,replicar(X,M,XS).
+
+replicar(X, N, XS):-length(XS,N),maplist(=(X),XS).
+
 
 % Ejercicio 3
-transponer([], []).
-transponer([[]|_], []) :- !.
-transponer(M, [Columna|Resto]) :-
-    maplist(filaAcolumna, M, Columna, FilasRestantes),
-    transponer(FilasRestantes, Resto).
+transponer([[]|_], []).
+transponer(M, T) :-
+	M = [PrimeraFila|_],
+	length(PrimeraFila, N).
+	numlist(1, N, Indices),
+	maplist(columna(M), Indices, T).
 
-filaAcolumna([H|T], H, T).
-
+columna(M, I, Columna) :-
+	J is I - 1,
+	maplist(nth0(J), M, Columna).
 
 % Predicado dado armarNono/3
 armarNono(RF, RC, nono(M, RS)) :-
@@ -36,27 +39,77 @@ zipR([R|RT], [L|LT], [r(R,L)|T]) :- zipR(RT, LT, T).
 			%				CantCeldasSinPintar is N-SumaRestricciones
 
 % version 2
-pintadasValidas(r(M, L)):- sum_list(M, N), pvAux(M, L, N).
 
-pvAux([], L, N). % Frenar el backtracking cuando ya no hay restricciones.
-pvAux([X], L, N):- !.
-% otro freno de backtracking? - caso base 2?
-pvAux([X|T], L, N):-
-	length(L,M),
-	N =< M,
-	length(Prefix, X),
-	append(Prefix, Rest, L),
-	N1 is N-X,
-	replicar('x', X, Prefix1), %?
-	remove_head(Rest, Rest2), % Rest2 crea el espacio mínimo entre restricciones
-	append(Prefix1, ['o'], Prefix2),
-	append(Prefix2, Rest2, L),
-	pvAux(T, Rest, N1). % probar ahora con la siguiente restricción
+
+% look first restriction: grab between (0 and length(L)) so that it's white, the remainder is
+% the amount of black that I need. then recursion for the second restriction.
+pintadasValidas(r([X|T], L)):-
+	% Defino primero las tres cantidades importantes
+	length(L, CeldasTotalesC),
+	sum_list([X|T], CeldasPintadasC),
+	CeldasSinPintarC is CeldasTotalesC-CeldasPintadasC,
+
+	% Algunas condiciones iniciales para poda (tal vez sean redudantes después)
+	%CeldasPintadasC =< CeldasTotalesC,
+
+	% Estas dos tal vez me sean útiles
+	length(ParteSinPintar, CeldasSinPintarC),
+	length(PartePintada, CeldasPintadasC),
+
+	% Proceso
+	member(TrozoPintadoC, [X|T]), % Tomo una restricción (que interpreto como cantidad)
+	% TrozoPintadoC =/= CeldasSinPintarC, ya que el primero
+	% varía y depende de qué trozo estamos hablando, mientras que el segundo es un total siempre igual.
+	replicar('x', TrozoPintadoC, TrozoPintado), % Armo ese trozo de celdas pintadas
+
+	% Idea 1:
+	% LLeno a L con los trozos pintados
+	%member(TrozoPintado, L), % Esto está mal, porque jode con la longitud: tendría que ser un append
+
+	% Ahora el mismo proceso, pero sin pintar. Tengo que determinar cuántos trozos hay y su length
+	% y la última condición es lo de >=0 para bordes, y >=1 para los demás.
+
+	%length(TrozoSinPintar, TrozoSinPintarC),
+	%TrozoSinPintarC => 0,
+	%TrozoSinPintarC =< CeldasSinPintarC,
+	%replicar('o', TrozoSinPintarC, TrozoSinPintar),
+	%member(TrozoSinPintar, L).
+	% Completar, faltan los bordes.
+
+	% Idea 2, append(TrozoPintado, TrozoSinPintar, Trozo); member(Trozo, L).
+	% Idea 3: dar más información de los tres totales, y saber que los
+	% trozos impares son sin pintar, mientras que los pares son pintados. por último, los bordes pueden ser 0
+	% e.g. es head/last, entonces length >=0.
+	sum_list([H|T], TrozosPintadosTotal), % Esta nueva cantidad es el total de trozos individuales pintados
+	TrozosSinPintarTotal =< TrozosPintadosTotal+1, % Definiendo el posible rango
+	TrozosSinPintarTotal => TrozosPintadosTotal,
+
+%	o, ignorar lo de arriba, definir dos listas posibles para sinpintar, luego crear una lista
+%	temporaria, hacer elementos en posición par e impar, y luego flatten.
+
+	%TrozoSinPintarC => 1,
+	%TrozoSinPintarC =< CeldasSinPintarC,	
+	%length(TrozoSinPintar, TrozoSinPintarC),
+	%replicar('o', TrozoSinPintarC, )
+
+%	sublista(TrozoPintado, L),
+
+	TrozosTotales is TrozosPintadosTotal+TrozosSinPintarTotal,
+	length(L1, TrozosPintadosTotal), % Creo L1 temporario, lista de trozos, para después aplanarlo
+	member(TrozoPintado, L1),
+
+	length(L2, TrozosSinPintarTotal).
+
+
+	% Idea 4: crear lista de trozos pintados, lista de trozos sin pintar, zipwith, aplanar.
+
+
+elemPosPar([H|T], X) :- nth1(N,[H|T,X), N mod 2 =:= 0.
+elemPosImpar([H|T], X) :- nth1(N,[H|T,X), N mod 2 \= 0.
+
+sublista(X,[H|T]) :- append(_,B,[H|T]),append(X,_,B) , X \= [].
+
 	
-
-remove_head([], []).
-remove_head([H|T], T).
-
 
 
 % Ejercicio 5
@@ -80,7 +133,7 @@ pintarObligatorias(r([X|T], L)) :-
 	member(C, L),
 	% declarar que es C es no iniciada
 	combinarCelda(A, B,  C), % completar
-	pintarObligatorias(r([	T], L)).
+	pintarObligatorias(r(T, L)).
 	% idea?: combinar cada par de restricciones
 
 
@@ -93,7 +146,10 @@ combinarCelda(A, B, A) :- nonvar(A), nonvar(B), A = B.
 combinarCelda(A, B, _) :- nonvar(A), nonvar(B), A \== B.
 
 % Ejercicio 7
-deducir1Pasada(_) :- completar("Ejercicio 7").
+deducir1Pasada(NN) :-
+	NN = nono(M, [R|Rs]),
+	pintarObligatorias(R),
+	deducir1Pasada(nono(M, Rs)).
 
 % Predicado dado
 cantidadVariablesLibres(T, N) :- term_variables(T, LV), length(LV, N).
@@ -111,10 +167,30 @@ deducirVariasPasadasCont(_, A, A). % Si VI = VF entonces no hubo más cambios y 
 deducirVariasPasadasCont(NN, A, B) :- A =\= B, deducirVariasPasadas(NN).
 
 % Ejercicio 8
-restriccionConMenosLibres(_, _) :- completar("Ejercicio 8").
+restriccionConMenosLibres(NN, R) :-
+	NN = nono(M, [r([X|Xs], L)|T]),
+	% R tiene que ser una de las restricciones.
+	member(R, [r([X|Xs], L)|T]),
+	cantidadVariablesLibres(L, N),
+	% Tiene que tener al menos una variable no instanciada.
+	N>=1,
+	% Y tiene que ser la mínima.
+	member(R2, [r([X|Xs], L)|T]),
+	cantidadVariablesLibres(L, N1),
+	R2 \= R,
+	N<=N1.
+
+
 
 % Ejercicio 9
-resolverDeduciendo(NN) :- completar("Ejercicio 9").
+resolverDeduciendo(NN) :-
+	NN = nono(M, [r([X|Xs], L)|T]),
+	deducirVariasPasadas(NN),
+	% chequear si no está resuelto acá? con !/1
+	restriccionConMenosLibres(NN, R),
+	pintadasValidas(R),
+	% chequear si está resuelto acá? con !/1
+	resolverDeduciendo(NN).
 
 % Ejercicio 10
 solucionUnica(NN) :- completar("Ejercicio 10").
