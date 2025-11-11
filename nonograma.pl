@@ -36,39 +36,12 @@ zipR([], [], []).
 zipR([R|RT], [L|LT], [r(R,L)|T]) :- zipR(RT, LT, T).
 
 % Ejercicio 4
-% version 1
-%pintadasValidas([R|RS],L) :- sumlist([R|RS], SumaRestricciones),length(L,N),
-			%				CantCeldasSinPintar is N-SumaRestricciones
-
-% version 2
-pintadasValidas(r(M, L)):- sum_list(M, N), pvAux(M, L, N).
-
-pvAux([], L, N). % Frenar el backtracking cuando ya no hay restricciones.
-pvAux([X], L, N):- !.
-% otro freno de backtracking? - caso base 2?
-pvAux([X|T], L, N):-
-	length(L,M),
-	N =< M,
-	length(Prefix, X),
-	append(Prefix, Rest, L),
-	N1 is N-X,
-	replicar('x', X, Prefix1), %?
-	remove_head(Rest, Rest2), % Rest2 crea el espacio mínimo entre restricciones
-	append(Prefix1, ['o'], Prefix2),
-	append(Prefix2, Rest2, L),
-	pvAux(T, Rest, N1). % probar ahora con la siguiente restricción
-	
-
-remove_head([], []).
-remove_head([H|T], T).
-
-%pintadasValidas nuevo
 
 pintadasValidas(r([], L)):- length(L, N), replicar(o, N, L).
 pintadasValidas(r(XS, L)):- length(L, N), masRestricciones(XS, N, L).
 
 
-armoFila(R, 0, []).
+armoFila(_, 0, []).
 armoFila(R, N, F) :- replicar(x, R, B1), M is N-R, M>= 0, between(0, M, T), replicar(o, T, L1), M2 is M -T, replicar(o,M2, L2),
 	append(L1,B1, F1), append(F1, L2, F).
 
@@ -84,34 +57,18 @@ masRestricciones([R|RS], N, F):- RS \= [], M is N-1, M>=0,
 
 
 
-
-
-
-
 % Ejercicio 5
 resolverNaive(nono(_Filas, Restricciones)) :- maplist(pintadasValidas, Restricciones).
 
-
-	% Razonamiento 2: usando 'pintadasObligatorias'
-	% es hacer pintadasValidas para todas las filas y quedarse con 'una' solución
-	% en donde puede ser que una de las celdas ya sepamos que es definitivamente un X o O.
-	% (algunas celdas van a seguir quedando como 'cualquier cosa', ver dibujo 1.3)
-	% ahora, al hacer pintadasValidas para columnas, es tener en cuenta si hay una restricción
-	% (i.e. que una celda tenga que ser X o O) existente.
-	% alternativo: ir resolviendo row1 col1, then row2 col2, etc.
-	% Esta forma puede no ser 'naive' en sí.
-
-
-
 % Ejercicio 6
-pintarObligatorias(r([X|T], L)) :-
-	pintadaValida(r([X|T], L)),
-	member(C, L),
-	% declarar que es C es no iniciada
-	combinarCelda(A, B,  C), % completar
-	pintarObligatorias(r([	T], L)).
-	% idea?: combinar cada par de restricciones
+pintarObligatorias(r(RS, L)) :-
+	bagof(L, pintadasValidas(r(RS, L)), Soluciones), % obtenemos una lista de pintadas validas
+	combinarFilas(Soluciones, L).
 
+combinarFilas([Sol], L) :- maplist(=, Sol, L). % Esto unifica la solucion con L
+combinarFilas([Sol1|[Sol2|SS]], L) :-   % combina todas las celdas de S1 y S2 a S3 y...
+	maplist(combinarCelda, Sol1, Sol2, Sol3),	
+	combinarFilas([Sol3|SS], L).
 
 
 % Predicado dado combinarCelda/3
