@@ -59,6 +59,30 @@ pvAux([X|T], L, N):-
 remove_head([], []).
 remove_head([H|T], T).
 
+%pintadasValidas nuevo
+
+pintadasValidas(r([], L)):- length(L, N), replicar(o, N, L).
+pintadasValidas(r(XS, L)):- length(L, N), masRestricciones(XS, N, L).
+
+
+armoFila(R, 0, []).
+armoFila(R, N, F) :- replicar(x, R, B1), M is N-R, M>= 0, between(0, M, T), replicar(o, T, L1), M2 is M -T, replicar(o,M2, L2),
+	append(L1,B1, F1), append(F1, L2, F).
+
+
+masRestricciones([R], N, F):- armoFila(R, N, F).
+masRestricciones([R|RS], N, F):- RS \= [], M is N-1, M>=0, 
+	between(R, M, N1), %el bloque tiene minimo R casilleros
+	Pref is N1-R , % pref son todos los casilleros que no son X's porque exceden la long de R
+	replicar(o, Pref, O1), replicar(x, R, X1), %lleno de os al pincipio, y de xs al final
+	append(O1, X1, F1 ), % junto todo
+	Resto is N-N1-1, % evaluo ahora los casilleros que me quedan por pintar
+	masRestricciones(RS, Resto, F2), F2 \= [],  append(F1, [o|F2], F). % separo con el o minimo necesario
+
+
+
+
+
 
 
 % Ejercicio 5
