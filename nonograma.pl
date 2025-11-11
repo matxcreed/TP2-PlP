@@ -1,15 +1,17 @@
 
 
 % Ejercicio 1
-%matriz(F, C, M) :-length(M,F),maplist([Fila]>>length(Fila,C), M).
+% matriz(+F, +C, -M)
 matriz(F, C, M) :-length(M, F),maplist(fila(C), M).
 
 fila(C, Fila) :-length(Fila, C).
 
 % Ejercicio 2
-replicar(X, N, XS):-length(XS,N),maplist(=(X), XS).
+%replicar(+Elem, +N, -Lista)
+replicar(X, N, XS):-length(XS,N), maplist(=(X), XS).
 
 % Ejercicio 3
+%transponer(+M, -MT)
 transponer([[]|_], []).
 transponer(M, T) :-
     M = [PrimeraFila|_],
@@ -36,7 +38,7 @@ zipR([], [], []).
 zipR([R|RT], [L|LT], [r(R,L)|T]) :- zipR(RT, LT, T).
 
 % Ejercicio 4
-
+% pintadasValidas(+R)
 pintadasValidas(r([], L)):- length(L, N), replicar(o, N, L).
 pintadasValidas(r(XS, L)):- length(L, N), masRestricciones(XS, N, L).
 
@@ -58,9 +60,11 @@ masRestricciones([R|RS], N, F):- RS \= [], M is N-1, M>=0,
 
 
 % Ejercicio 5
+% resolverNaive(+NN)
 resolverNaive(nono(_Filas, Restricciones)) :- maplist(pintadasValidas, Restricciones).
 
 % Ejercicio 6
+% pintarObligatorias(+R)
 pintarObligatorias(r(RS, L)) :-
 	bagof(L, pintadasValidas(r(RS, L)), Soluciones), % obtenemos una lista de pintadas validas
 	combinarFilas(Soluciones, L).
@@ -79,6 +83,7 @@ combinarCelda(A, B, A) :- nonvar(A), nonvar(B), A = B.
 combinarCelda(A, B, _) :- nonvar(A), nonvar(B), A \== B.
 
 % Ejercicio 7
+% deducir1Pasada(+NN)
 deducir1Pasada(nono(_Filas, Restricciones)) :- maplist(pintarObligatorias, Restricciones).
 
 % Predicado dado
@@ -97,9 +102,11 @@ deducirVariasPasadasCont(_, A, A). % Si VI = VF entonces no hubo más cambios y 
 deducirVariasPasadasCont(NN, A, B) :- A =\= B, deducirVariasPasadas(NN).
 
 % Ejercicio 8
+% restriccionConMenosLibres(+NN, -R)
 restriccionConMenosLibres(nono(_Filas, Restricciones), R) :- completar("Ejercicio 8").
 
 % Ejercicio 9
+% resolverDeduciendo(+NN)
 resolverDeduciendo(NN) :- deducirVariasPasadas(NN), ground(NN).
 resolverDeduciendo(NN) :- 
 	deducirVariasPasadas(NN), not(ground(NN)), 
@@ -107,7 +114,14 @@ resolverDeduciendo(NN) :-
 	resolverDeduciendo(NN).
 
 % Ejercicio 10
+% solucionUnica(+NN)
 solucionUnica(NN) :- findall(NN, resolverDeduciendo(NN), Bag), length(Bag, 1).
+
+% Ejercicio 12
+% El predicado replicar está definido como un length y un maplist.
+% El predicado length es reversible. Por otro lado, el goal del maplist, (=) también es reversible.
+% Por lo tanto replicar es reversible en todos sus argumentos, particularmente el segundo. 
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                              %
