@@ -97,9 +97,7 @@ deducirVariasPasadasCont(_, A, A). % Si VI = VF entonces no hubo más cambios y 
 deducirVariasPasadasCont(NN, A, B) :- A =\= B, deducirVariasPasadas(NN).
 
 % Ejercicio 8
-restriccionConMenosLibres(nono(_Filas, [R]), R).
-restriccionConMenosLibres(nono(_Filas, [R1|[R2|RS]]), R1) :- cantidadVariablesLibres(R1, N1), cantidadVariablesLibres(R2, N2), N1 >= N2.
-restriccionConMenosLibres(nono(_Filas, [R1|[R2|RS]]), R2) :- cantidadVariablesLibres(R1, N1), cantidadVariablesLibres(R2, N2), N2 > N1.
+restriccionConMenosLibres(nono(_Filas, Restricciones), R) :- completar("Ejercicio 8").
 
 % Ejercicio 9
 resolverDeduciendo(NN) :- completar("Ejercicio 9").
