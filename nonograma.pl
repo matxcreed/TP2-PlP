@@ -100,10 +100,14 @@ deducirVariasPasadasCont(NN, A, B) :- A =\= B, deducirVariasPasadas(NN).
 restriccionConMenosLibres(nono(_Filas, Restricciones), R) :- completar("Ejercicio 8").
 
 % Ejercicio 9
-resolverDeduciendo(NN) :- completar("Ejercicio 9").
+resolverDeduciendo(NN) :- deducirVariasPasadas(NN), ground(NN).
+resolverDeduciendo(NN) :- 
+	deducirVariasPasadas(NN), not(ground(NN)), 
+	restriccionConMenosLibres(NN, R), pintadasValidas(R),
+	resolverDeduciendo(NN).
 
 % Ejercicio 10
-solucionUnica(NN) :- completar("Ejercicio 10").
+solucionUnica(NN) :- findall(NN, resolverDeduciendo(NN), Bag), length(Bag, 1).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                              %
