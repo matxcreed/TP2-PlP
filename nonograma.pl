@@ -103,7 +103,15 @@ deducirVariasPasadasCont(NN, A, B) :- A =\= B, deducirVariasPasadas(NN).
 
 % Ejercicio 8
 % restriccionConMenosLibres(+NN, -R)
-restriccionConMenosLibres(nono(_Filas, Restricciones), R) :- completar("Ejercicio 8").
+restriccionConMenosLibres(nono(_Filas, Restricciones), R) :- 
+	member(R, Restricciones), 
+    cantidadVariablesLibres(R, NLibresR),
+    NLibresR > 0,
+    not((member(Otra, Restricciones), % mira que no exista otra restriccion con menos variables libres que R
+         cantidadVariablesLibres(Otra, NLibresOtra),
+         NLibresOtra > 0,
+         NLibresOtra < NLibresR)).
+
 
 % Ejercicio 9
 % resolverDeduciendo(+NN)
