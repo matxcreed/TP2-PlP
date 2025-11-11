@@ -1,7 +1,10 @@
 
 
 % Ejercicio 1
-matriz(F, C, M) :-length(M,F),maplist([Fila]>>length(Fila, C), M).
+%matriz(F, C, M) :-length(M,F),maplist([Fila]>>length(Fila,C), M).
+matriz(F, C, M) :-length(M, F),maplist(fila(C), M).
+
+fila(C, Fila) :-length(Fila, C).
 
 % Ejercicio 2
 replicar(X, N, XS):-length(XS,N),maplist(=(X), XS).
