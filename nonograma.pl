@@ -125,6 +125,27 @@ resolverDeduciendo(NN) :-
 % solucionUnica(+NN)
 solucionUnica(NN) :- findall(NN, resolverDeduciendo(NN), Bag), length(Bag, 1).
 
+% Ejercicio 11
+tam(N, (F, C)) :- nn(N, nono(M, _)), matriz(F, C, M).
+checkBack(NN) :- deducirVariasPasadas(NN), ground(NN).
+% Para la primera columna usamos 'tam', para la segunda 'resolverDeduciendo' y para la tercera 'checkBack'
+% N  | Tamaño  | ¿Tiene solucion unica? | ¿Es deducible sin backtracking?
+% 0  | 2 x 3   |		   Si  		    | 			   Si
+% 1  | 5 x 5   |		   Si  		    | 			   Si
+% 2  | 5 x 5   |		   Si  		    | 			   Si
+% 3  | 10 x 10 |		   Si  		    | 			   Si
+% 4  | 5 x 5   |		   Si  		    | 			   Si
+% 5  | 5 x 5   |		   Si  		    | 			   No
+% 6  | 5 x 5   |		   Si  		    | 			   Si
+% 7  | 10 x 10 |		   Si  		    | 			   Si
+% 8  | 10 x 10 |		   Si  		    | 			   Si
+% 9  | 5 x 5   |		   Si  		    | 			   Si
+% 10 | 5 x 5   |		   Si  		    | 			   No
+% 11 | 10 x 10 |		   Si  		    | 			   Si
+% 12 | 15 x 15 |		   Si  		    | 			   Si
+% 13 | 11 x 5  |		   Si  		    | 			   No
+% 14 | 4 x 4   |		   No  		    | 			   No
+
 % Ejercicio 12
 % El predicado replicar está definido como un length y un maplist.
 % El predicado length es reversible. Por otro lado, el goal del maplist, (=) también es reversible.
