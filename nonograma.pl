@@ -118,7 +118,7 @@ restriccionConMenosLibres(nono(_Filas, Restricciones), R) :-
 resolverDeduciendo(NN) :- deducirVariasPasadas(NN), ground(NN).
 resolverDeduciendo(NN) :- 
 	deducirVariasPasadas(NN), not(ground(NN)), 
-	restriccionConMenosLibres(NN, R), pintadasValidas(R),
+	restriccionConMenosLibres(NN, R), !, pintadasValidas(R),
 	resolverDeduciendo(NN).
 
 % Ejercicio 10
