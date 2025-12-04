@@ -69,7 +69,7 @@ pintarObligatorias(r(RS, L)) :-
 	bagof(L, pintadasValidas(r(RS, L)), Soluciones), % obtenemos una lista de pintadas validas
 	combinarFilas(Soluciones, L).
 
-combinarFilas([Sol], L) :- Sol = L. % Esto unifica la solucion con L
+combinarFilas([Sol], L) :- Sol = L. % Esto unifica la solucion con L. ¿Es lo mismo hacer combinarFilas([L], L).?
 combinarFilas([Sol1|[Sol2|SS]], L) :-   % combina todas las celdas de S1 y S2 a S3 y...
 	maplist(combinarCelda, Sol1, Sol2, Sol3),	
 	combinarFilas([Sol3|SS], L).
