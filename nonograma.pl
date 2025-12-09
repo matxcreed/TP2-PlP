@@ -165,6 +165,7 @@ checkBack(NN) :- deducirVariasPasadas(NN), ground(NN).
 % El predicado replicar está definido como un length y un maplist.
 % El predicado length es reversible. Por otro lado, el goal del maplist, (=) también es reversible.
 % Por lo tanto replicar es reversible en todos sus argumentos, particularmente el segundo. 
+% El motivo de esto se encuentra en el length(XS, N), que en caso de no ser dato, va a ir probando con todos los N posibles, que siempre serán una respuesta válida, e infinitos.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
