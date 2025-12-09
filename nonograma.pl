@@ -2,9 +2,9 @@
 
 % Ejercicio 1
 % matriz(+F, +C, -M)
-matriz(F, C, M) :-length(M, F),maplist(longEsC(C), M).
+matriz(F, C, M) :-length(M, F),maplist(longDeFilas(C), M).
 
-longEsC(C, Fila) :-length(Fila, C).
+longDeFilas(C, Fila) :-length(Fila, C).
 
 % Ejercicio 2
 %replicar(+Elem, +N, -Lista)
