@@ -12,17 +12,32 @@ replicar(X, N, XS):-length(XS,N), maplist(=(X), XS).
 
 % Ejercicio 3
 %transponer(+M, -MT)
-
 transponer([], []).
 transponer([[]|_], []).
-transponer([PrimeraFila|Resto], T) :-
-    length(PrimeraFila, N),
-    numlist(1, N, Indices),
-    maplist(columna([PrimeraFila|Resto]), Indices, T).
+transponer(M, [Columna|Resto]) :- extraerColumna(M, Columna, MSinColumna),
+	transponer(MSinColumna, Resto).
 
-columna(M, I, Columna) :-
-    J is I - 1,
-    maplist(nth0(J), M, Columna).
+%extraerColumna(+M, -Heads, -Tails)
+extraerColumna(M, Heads, Tails) :- maplist(split, M, Heads, Tails).
+
+%split(+L, -Cabeza, -Cola)
+split([Cabeza|Cola], Cabeza, Cola).
+
+%%transponer([PrimeraFila|Resto], T) :-     //version1
+%%    length(PrimeraFila, N),
+%%    numlist(1, N, Indices),
+%%    maplist(columna([PrimeraFila|Resto]), Indices, T).
+
+%%columna(M, I, Columna) :-
+%%    J is I - 1,
+%%    maplist(nth0(J), M, Columna).
+
+%%transponer(M, T) :- length(M, CT), append([E], _, M), length(E, FT),   //version2 no funciona. da filas x columnas cantidad de respuestas con un solo valor unificado
+%%	matriz(FT, CT, T),
+%%	nth0(I, M, Fila),
+%%	nth0(J, Fila, X),
+%%	nth0(J, T, Columna),
+%%	nth0(I, Columna, X).	
 
 % Predicado dado armarNono/3
 armarNono(RF, RC, nono(M, RS)) :-
@@ -140,11 +155,11 @@ checkBack(NN) :- deducirVariasPasadas(NN), ground(NN).
 % 7  | 10 x 10 |		   Si  		    | 			   Si
 % 8  | 10 x 10 |		   Si  		    | 			   Si
 % 9  | 5 x 5   |		   Si  		    | 			   Si
-% 10 | 5 x 5   |		   Si  		    | 			   No
+% 10 | 5 x 5   |		   No  		    | 			   No
 % 11 | 10 x 10 |		   Si  		    | 			   Si
 % 12 | 15 x 15 |		   Si  		    | 			   Si
 % 13 | 11 x 5  |		   Si  		    | 			   No
-% 14 | 4 x 4   |		   No  		    | 			   No
+% 14 | 4 x 4   |		   Si  		    | 			   No
 
 % Ejercicio 12
 % El predicado replicar está definido como un length y un maplist.
