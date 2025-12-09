@@ -12,17 +12,17 @@ replicar(X, N, XS):-length(XS,N), maplist(=(X), XS).
 
 % Ejercicio 3
 %transponer(+M, -MT)
+
+transponer([], []).
 transponer([[]|_], []).
-transponer(M, T) :-
-    M = [PrimeraFila|_],
+transponer([PrimeraFila|Resto], T) :-
     length(PrimeraFila, N),
     numlist(1, N, Indices),
-    maplist(columna(M), Indices, T).
+    maplist(columna([PrimeraFila|Resto]), Indices, T).
 
 columna(M, I, Columna) :-
     J is I - 1,
     maplist(nth0(J), M, Columna).
-
 
 % Predicado dado armarNono/3
 armarNono(RF, RC, nono(M, RS)) :-
